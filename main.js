@@ -2,19 +2,35 @@
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const uri = "mongodb+srv://admin:Group5@cluster0.0vxli.mongodb.net/CafeData?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-const database = client.db('CafeData');
-const cafes = database.collection('CafeInfo');
+
 async function findCafe(search) {
     try {
-        await client.connect();
         const database = client.db('CafeData');
         const cafes = database.collection('CafeInfo');
-        const query = { 'Company Name': /\b\b/i };
+        await client.connect();
+        const query = { 'Company Name': new RegExp(`\\b${search}\\b`, 'gi') };
+
         const cafe = await cafes.findOne(query);
         console.log(cafe);
+        // const cafe = await cafes.find(query);
+
+        // while (cafe.hasNext()) {
+        //     console.log(cafe.next());
+        // }
+
     } finally {
-        // Ensures that the client will close when you finish/error
         await client.close();
     }
 }
-findCafe('Hard rock cafe').catch(console.dir);
+
+async function findAsync(arr, asyncCallback) {
+    const promises = arr.map(asyncCallback);
+    const results = await Promise.all(promises);
+    const index = results.findIndex(result => result);
+    return arr[index];
+  }
+  findAsync(arr, async (thing) => {
+    const ret = await findThing();
+    return false;
+  })  
+findCafe('Kapoors').catch(console.dir);
