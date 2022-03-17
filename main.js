@@ -1,10 +1,10 @@
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const uri = "mongodb+srv://admin:Group5@cluster0.0vxli.mongodb.net/CafeData?retryWrites=true&w=majority";
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-const database = client.db('CafeData');
-const cafes = database.collection('CafeInfo');
-async function findCafe(search) {
+
+async function findCafeDetails(search) {
+    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+    var results = [];
     try {
         await client.connect();
         const database = client.db('CafeData');
@@ -13,7 +13,7 @@ async function findCafe(search) {
         const query = { 'Company Name': new RegExp(`\\b${search}`, 'gi')};
         const options = {
             sort:  {Address: 1},
-            projection: {_id: 0, 'Company Name':1, Address: 1, Phone: 1, Link: 1, Rating: 1, NumReview: 1}
+            projection: {_id: 0, 'Company Name':1, Address: 1, Phone: 1, Link: 1, Rating:1, NumReview:1}
         }
 
         const cursor = cafes.find(query, options);
@@ -23,12 +23,95 @@ async function findCafe(search) {
             console.log("No documents found!");
         }
 
-        // replace console.dir with your callback to access individual elements
-        await cursor.forEach(console.dir);
+        await cursor.forEach(function(item){
+            results.push(item);
+            
+        }); 
+        // console.log(results);
+        return results;;
     } finally {
         // Ensures that the client will close when you finish/error
         await client.close();
     }
 }
 
-findCafe('Caf').catch(console.dir);
+async function search(search) {
+    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+    var results = [];
+    try {
+        await client.connect();
+        const database = client.db('CafeData');
+        const cafes = database.collection('CafeInfo');
+
+        const query = { 'Company Name': new RegExp(`\\b${search}`, 'gi')};
+        const options = {
+            sort:  {Address: 1},
+            projection: {_id: 0, 'Company Name':1}
+        }
+
+        const cursor = cafes.find(query, options);
+
+        // print a message if no documents were found
+        if ((await cursor.count()) === 0) {
+            console.log("No documents found!");
+        }
+        
+        await cursor.forEach(function(item){
+            results.push(item);
+            
+        }); 
+        // console.log(results);
+        return results;
+    } finally {
+        // Ensures that the client will close when you finish/error
+        await client.close();
+    }
+}
+
+async function findDetails(search) {
+    try {
+        await client.connect();
+        const database = client.db('CafeData');
+        const cafes = database.collection('CafeInfo');
+
+        const query = { 'Company Name': new RegExp(`\\b${search}`, 'gi')};
+        const options = {
+            sort:  {Address: 1},
+<<<<<<< HEAD
+            projection: {_id: 0, 'Company Name':1, Address: 1, Phone: 1, Link: 1, Rating: 1, NumReview: 1}
+=======
+            projection: {_id: 0, 'Company Name':1}
+>>>>>>> a51f0dfb7c8a21fae369373f752fca9fed875454
+        }
+
+        const cursor = cafes.find(query, options);
+
+        // print a message if no documents were found
+        if ((await cursor.count()) === 0) {
+            console.log("No documents found!");
+        }
+
+        await cursor.forEach(console.dir);
+        
+    } finally {
+        // Ensures that the client will close when you finish/error
+        await client.close();
+    }
+}
+
+
+//for frontend: update UI inside the 'then' 
+search('Hard Rock cafe').then(function(results){
+    //update UI here using results array
+    console.log(results);
+}).catch(console.dir);
+
+
+//for frontend: update UI inside the 'then' 
+findCafeDetails('Hard Rock cafe').then(function(results){
+    //update UI here using results array
+    console.log(results);
+}).catch(console.dir);
+
+
+
