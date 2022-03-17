@@ -13,11 +13,7 @@ async function findCafeDetails(search) {
         const query = { 'Company Name': new RegExp(`\\b${search}`, 'gi')};
         const options = {
             sort:  {Address: 1},
-<<<<<<< HEAD
             projection: {_id: 0, 'Company Name':1, Address: 1, Phone: 1, Link: 1, Rating:1, NumReview:1}
-=======
-            projection: {_id: 0, 'Company Name':1, Address: 1, Phone: 1, Link: 1, Rating: 1, NumReview:1}
->>>>>>> e3816e0571ff3112c071fcf7f4e65d1b0f5b9989
         }
 
         const cursor = cafes.find(query, options);
