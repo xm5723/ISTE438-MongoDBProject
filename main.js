@@ -68,33 +68,6 @@ async function search(search) {
     }
 }
 
-async function findDetails(search) {
-    try {
-        await client.connect();
-        const database = client.db('CafeData');
-        const cafes = database.collection('CafeInfo');
-
-        const query = { 'Company Name': new RegExp(`\\b${search}`, 'gi')};
-        const options = {
-            sort:  {Address: 1},
-            projection: {_id: 0, 'Company Name':1, Address: 1, Phone: 1, Link: 1, Rating: 1, NumReview: 1, Comments: 1}
-        }
-
-        const cursor = cafes.find(query, options);
-
-        // print a message if no documents were found
-        if ((await cursor.count()) === 0) {
-            console.log("No documents found!");
-        }
-
-        await cursor.forEach(console.dir);
-        
-    } finally {
-        // Ensures that the client will close when you finish/error
-        await client.close();
-    }
-}
-
 
 //for frontend: update UI inside the 'then' 
 search('Hard Rock cafe').then(function(results){
