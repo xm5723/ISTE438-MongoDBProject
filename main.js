@@ -13,7 +13,7 @@ async function findCafeDetails(search) {
         const query = { 'Company Name': new RegExp(`\\b${search}`, 'gi')};
         const options = {
             sort:  {Address: 1},
-            projection: {_id: 0, 'Company Name':1, Address: 1, Phone: 1, Link: 1, Rating:1, NumReview:1}
+            projection: {_id:{"$toString": "$_id"},'Company Name':1, Address: 1, Phone: 1, Link: 1, Rating:1, NumReview:1}
         }
 
         const cursor = cafes.find(query, options);
@@ -25,10 +25,12 @@ async function findCafeDetails(search) {
 
         await cursor.forEach(function(item){
             results.push(item);
-            
+                
         }); 
+
+
         // console.log(results);
-        return results;;
+        return results;
     } finally {
         // Ensures that the client will close when you finish/error
         await client.close();
@@ -77,7 +79,7 @@ search('Hard Rock cafe').then(function(results){
 
 
 //for frontend: update UI inside the 'then' 
-findCafeDetails('Hard Rock cafe').then(function(results){
+findCafeDetails('caf').then(function(results){
     //update UI here using results array
     console.log(results);
 }).catch(console.dir);
