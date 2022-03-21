@@ -1,5 +1,5 @@
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, GridFSBucket } = require('mongodb');
 const uri = "mongodb+srv://admin:Group5@cluster0.0vxli.mongodb.net/CafeData?retryWrites=true&w=majority";
 
 async function findCafeDetails(search) {
@@ -25,7 +25,6 @@ async function findCafeDetails(search) {
 
         await cursor.forEach(function(item){
             results.push(item);
-                
         }); 
 
 
@@ -70,6 +69,37 @@ async function search(search) {
     }
 }
 
+async function findImage(objectId){
+    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+    var results = [];
+    var data = '';
+    try{
+        await client.connect();
+        const database = client.db('CafeData');
+        const cafesImages = database.collection('fs.files');
+        const query = { 'cafeID': new RegExp(`\\b${objectId}`, 'gi')};
+        const options = {
+            projection: {_id:{"$toString": "$_id"}, filename: 1}
+        }
+        const cursor = cafesImages.find(query, options);
+        // print a message if no documents were found
+        if ((await cursor.count()) === 0) {
+            console.log("No documents found!");
+        }
+        await cursor.forEach(function(item){
+            results.push(item);
+        }); 
+        // console.log(results);
+        data = JSON.stringify(results[0].filename);
+        //gfs.openDownloadStreamByName(data).pipe(res);
+        return data;
+    }
+    finally {
+        // Ensures that the client will close when you finish/error
+        await client.close();
+    }
+}
+
 
 //for frontend: update UI inside the 'then' 
 search('Hard Rock cafe').then(function(results){
@@ -84,5 +114,7 @@ findCafeDetails('caf').then(function(results){
     console.log(results);
 }).catch(console.dir);
 
-
-
+findImage('6211595e83f42d30651d2e3e').then(function(data){
+    //update UI here using results array
+    console.log(data);
+}).catch(console.dir);
