@@ -19,5 +19,6 @@
   "homepage": "https://github.com/xm5723/ISTE438-MongoDBProject#readme",
   "dependencies": {
     "mongodb": "^4.4.1"
+    
   }
 }

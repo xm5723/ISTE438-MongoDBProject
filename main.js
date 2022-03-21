@@ -6,7 +6,6 @@ async function findCafeDetails(search) {
     const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
     var results = [];
     try {
-        await client.connect();
         const database = client.db('CafeData');
         const cafes = database.collection('CafeInfo');
 
@@ -32,7 +31,6 @@ async function findCafeDetails(search) {
         // console.log(results);
         return results;
     } finally {
-        // Ensures that the client will close when you finish/error
         await client.close();
     }
 }
