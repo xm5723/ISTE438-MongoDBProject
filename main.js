@@ -6,7 +6,6 @@ async function findCafeDetails(search) {
     const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
     var results = [];
     try {
-        await client.connect();
         const database = client.db('CafeData');
         const cafes = database.collection('CafeInfo');
 
@@ -31,7 +30,6 @@ async function findCafeDetails(search) {
         // console.log(results);
         return results;
     } finally {
-        // Ensures that the client will close when you finish/error
         await client.close();
     }
 }
@@ -47,7 +45,7 @@ async function search(search) {
         const query = { 'Company Name': new RegExp(`\\b${search}`, 'gi')};
         const options = {
             sort:  {Address: 1},
-            projection: {_id: 0, 'Company Name':1}
+            projection: {'Company Name':1}
         }
 
         const cursor = cafes.find(query, options);
@@ -100,6 +98,20 @@ async function findImage(objectId){
     }
 }
 
+async function cafeComments(objectId, comment){
+    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+    try{
+        await client.connect();
+        const database = client.db('CafeData');
+        const cafes = database.collection('CafeComments');
+        
+        var myObj = { objectId: objectId, comment: comment };
+        const insert = cafes.insertOne(myObj);
+    }
+    finally {
+        await client.close();
+    }
+}
 
 //for frontend: update UI inside the 'then' 
 search('Hard Rock cafe').then(function(results){
