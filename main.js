@@ -115,6 +115,38 @@ async function getCommentsByID(cafeObjectId) {
         await client.close();
     }
 }
+
+async function findImage(objectId){
+    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+    var results = [];
+    var data = '';
+    try{
+        await client.connect();
+        const database = client.db('CafeData');
+        const cafesImages = database.collection('fs.files');
+        const query = { 'cafeID': new RegExp(`\\b${objectId}`, 'gi')};
+        const options = {
+            projection: {_id:{"$toString": "$_id"}, filename: 1}
+        }
+        const cursor = cafesImages.find(query, options);
+        // print a message if no documents were found
+        if ((await cursor.count()) === 0) {
+            console.log("No documents found!");
+        }
+        await cursor.forEach(function(item){
+            results.push(item);
+        }); 
+        // console.log(results);
+        data = JSON.stringify(results[0].filename);
+        //gfs.openDownloadStreamByName(data).pipe(res);
+        return data;
+    }
+    finally {
+        // Ensures that the client will close when you finish/error
+        await client.close();
+    }
+}
+
 //for frontend: update UI inside the 'then' 
 search('Hard Rock cafe').then(function(results){
     //update UI here using results array
