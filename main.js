@@ -6,6 +6,7 @@ async function findCafeDetails(search) {
     const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
     var results = [];
     try {
+        await client.connect();
         const database = client.db('CafeData');
         const cafes = database.collection('CafeInfo');
 
@@ -67,21 +68,53 @@ async function search(search) {
         await client.close();
     }
 }
-async function cafeComments(objectId, comment){
+async function setCafeComment(objectId, comment){
     const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
     try{
         await client.connect();
         const database = client.db('CafeData');
-        const cafes = database.collection('CafeComments');
+        const comments = database.collection('CafeComments');
         
         var myObj = { objectId: objectId, comment: comment };
-        const insert = cafes.insertOne(myObj);
+        await comments.insertOne(myObj);
     }
     finally {
         await client.close();
     }
 }
 
+async function getCommentsByID(cafeObjectId) {
+    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+    var results = [];
+    try {
+        await client.connect();
+        const database = client.db('CafeData');
+        const comments = database.collection('CafeComments');
+        const query = { objectId: cafeObjectId};
+        const options = {
+            projection: {_id:0,comment:1}
+        }
+
+        const cursor = comments.find(query, options);
+
+        // print a message if no documents were found
+        if ((await cursor.count()) === 0) {
+            console.log("No documents found!");
+        }
+
+        await cursor.forEach(function(item){
+            results.push(item);
+
+        }); 
+
+
+        // console.log(results);
+        var json = JSON.stringify(results);
+        return results;
+    } finally {
+        await client.close();
+    }
+}
 //for frontend: update UI inside the 'then' 
 search('Hard Rock cafe').then(function(results){
     //update UI here using results array
@@ -90,10 +123,18 @@ search('Hard Rock cafe').then(function(results){
 
 
 //for frontend: update UI inside the 'then' 
-findCafeDetails('caf').then(function(results){
+findCafeDetails('Hard Rock cafe').then(function(results){
     //update UI here using results array
     console.log(results);
 }).catch(console.dir);
 
 
+// setCafeComment('6211595e83f42d30651d2e5e','this is a test comment');
 
+getCommentsByID('6211595e83f42d30651d2e5e').then(function(results){
+    //update UI here using results array
+    for (var i=0; i<results.length;i++){
+        console.log(results[i].comment);
+    }
+
+}).catch(console.dir);
