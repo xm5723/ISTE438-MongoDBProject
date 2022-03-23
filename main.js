@@ -173,3 +173,8 @@ getCommentsByID('6211595e83f42d30651d2e5e').then(function(results){
     }
 
 }).catch(console.dir);
+
+findImage('6211595e83f42d30651d2e3e').then(function(data){
+    //update UI here using results array
+    console.log(data);
+}).catch(console.dir);
