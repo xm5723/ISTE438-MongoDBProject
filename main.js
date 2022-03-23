@@ -109,7 +109,7 @@ async function getCommentsByID(cafeObjectId) {
 
 
         // console.log(results);
-        var json = JSON.stringify(results);
+        // var json = JSON.stringify(results);
         return results;
     } finally {
         await client.close();
@@ -125,6 +125,9 @@ search('Hard Rock cafe').then(function(results){
 //for frontend: update UI inside the 'then' 
 findCafeDetails('Hard Rock cafe').then(function(results){
     //update UI here using results array
+    for (var i=0; i<results.length;i++){
+        console.log(results[i].Address);
+    }
     console.log(results);
 }).catch(console.dir);
 
