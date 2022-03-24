@@ -40,7 +40,7 @@ app.post("/getByCompanyName", (req, res) => {
 
   });
 
-  app.get("/search", (req, res) => {
+  app.post("/search", (req, res) => {
     var companyName = req.body.companyName;
     console.log("req:" +  req.body.companyName);
     const query = { 'Company Name': new RegExp(`\\b${companyName}`, 'gi')};
@@ -60,7 +60,7 @@ app.post("/getByCompanyName", (req, res) => {
 
   });
 
-  app.get("/getCommentsByID", (req, res) => {
+  app.post("/getCommentsByID", (req, res) => {
     console.log("req:" +  req.body.cafeID);
     var cafeID = req.body.cafeID;
     const query = { objectId: cafeID};
