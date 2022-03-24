@@ -19,9 +19,10 @@ client.connect();
 app.get('/', (req, res) => {
     res.send("Hello World");
   });
-app.get("/getByCompanyName", (req, res) => {
+app.post("/getByCompanyName", (req, res) => {
     var companyName = req.body.companyName;
     console.log("req:" +  req.body.companyName);
+    console.log(req.body);
     const query = { 'Company Name': new RegExp(`\\b${companyName}`, 'gi')};
         const options = {
             sort:  {Address: 1},

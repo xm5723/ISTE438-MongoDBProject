@@ -11,42 +11,18 @@
     <link rel="stylesheet" href="assets/css/style.css" />
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script>
-      async function getAxios  () {
-      try {
-        const response = await axios.get(`http://localhost:3000/getByCompanyName/?companyName=hard`);
-
-        const todoItems = response.data;
-
-        console.log(`GET: Here's the list of todos`, todoItems);
-
-        return todoItems;
-      } catch (errors) {
-        console.error(errors);
+      async function getByCompanyName() {
+        try{
+          const params = new URLSearchParams();
+          params.append("companyName",document.getElementById("toSearch").value)
+          const response = await axios.post(`http://localhost:3000/getByCompanyName`,params);
+          const responseJson = response.data;
+          console.log(`GET:`, responseJson);
+          return responseJson;
+        }catch (errors) {
+          console.error(errors);
+        }
       }
-    }
-      function getByCompanyName(){
-
-        
-        var http = new XMLHttpRequest();// Create the object
-        var url = new URL ("http://localhost:3000/getByCompanyName/");
-        // url.searchParams('companyName',document.getElementById('toSearch').value);
-        var params = 'companyName=hard'+document.getElementById('toSearch').value;
-        
-        http.open( "GET", url+"?"+params, true );   // Set up the request. Arguments are: GET/POST, file, true if asynchronous
-        http.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        http.responseType = 'json';
-
-        http.onreadystatechange = parseData;     // Callback function that is called when the response is received
-        http.send();                         // Start the process (send null for GETs; data for POSTs)
-        function parseData() {
-            if ( http.readyState == 4 ) {            // Make sure the response is complete (all done)
-                if ( http.status == 200 ) {            // Make sure the response is good (a valid page)
-                    console.log( http.response);
-                }
-            }
-          }
-      }
-
     </script>
     <title>Project 1</title>
   </head>
@@ -57,7 +33,7 @@
       <form>
         <h2>Enter the keyword to Search</h2>
         <input type="text" id="toSearch"></input>
-        <input type="button" id="go" onclick="getAxios()" value="Go" />
+        <input type="button" id="go" onclick="getByCompanyName()" value="Go" />
       </form>
     </div>
   </body>
