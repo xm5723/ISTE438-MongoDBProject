@@ -22,12 +22,14 @@ async function findCafeDetails(search) {
         // print a message if no documents were found
         if ((await cursor.count()) === 0) {
             console.log("No documents found!");
+        }else{
+            await cursor.forEach(function(item){
+                results.push(item);
+    
+            });
         }
 
-        await cursor.forEach(function(item){
-            results.push(item);
-
-        }); 
+         
 
 
         // console.log(results);
@@ -70,7 +72,6 @@ async function search(search) {
     }
 }
 async function setCafeComment(objectId, comment){
-    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
     try{
         await client.connect();
         const database = client.db('CafeData');
@@ -126,6 +127,7 @@ async function findImage(objectId){
         const database = client.db('CafeData');
         const cafesImages = database.collection('fs.files');
         const query = { 'cafeID': new RegExp(`\\b${objectId}`, 'gi')};
+        
         const options = {
             projection: {_id:{"$toString": "$_id"}, filename: 1}
         }
@@ -189,5 +191,9 @@ getCommentsByID('6211595e83f42d30651d2e5e').then(function(results){
 
 findImage('6211595e83f42d30651d2e3e').then(function(data){
     //update UI here using results array
+   
+    // var imageUrl = new URL(data.toString);
     console.log(data);
+    // var readStream = fs.createReadStream({filename:imageUrl});
+    // readStream.pipe(res);
 }).catch(console.dir);
