@@ -1,6 +1,7 @@
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, GridFSBucket, createWriteStream } = require('mongodb');
 const uri = "mongodb+srv://admin:Group5@cluster0.0vxli.mongodb.net/CafeData?retryWrites=true&w=majority";
+var fs = require('fs');
 
 async function findCafeDetails(search) {
     const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
@@ -136,14 +137,26 @@ async function findImage(objectId){
         await cursor.forEach(function(item){
             results.push(item);
         }); 
-        // console.log(results);
-        data = JSON.stringify(results[0].filename);
-        //gfs.openDownloadStreamByName(data).pipe(res);
+
+        data = results[0].filename;
+        console.log("data", data);
+        const bucket = new GridFSBucket(database, {bucketName: 'fs'});
+
+        bucket.openDownloadStreamByName(data).
+        pipe(fs.createWriteStream('/Users/xingmeng/Documents/school/2022Spring/ISTE483/project/image/outputFile.png')).
+        on('error', function(error) {
+            assert.ifError(error);
+        }).
+        on('finish', function() {
+            process.exit(0);
+        });
+
         return data;
     }
     finally {
         // Ensures that the client will close when you finish/error
-        await client.close();
+        //await client.close();
+        console.log("finally")
     }
 }
 
