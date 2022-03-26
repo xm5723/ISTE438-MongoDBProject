@@ -153,6 +153,9 @@ async function findImage(objectId){
             process.exit(0);
         });
 
+        // append the image to the browser
+        // default image
+
         return data;
     }
     finally {

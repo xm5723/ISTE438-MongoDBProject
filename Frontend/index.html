@@ -21,6 +21,7 @@
           params.append("companyName",document.getElementById("toSearch").value)
           const response = await axios.post(`http://localhost:3000/getByCompanyName`,params);
           const responseJson = response.data;
+          console.log(responseJson);
           var arr = [];
           for(var i=0; i<responseJson.length; i++){
             arr.push(responseJson[i]['Company Name']);
