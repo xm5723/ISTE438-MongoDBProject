@@ -29,9 +29,6 @@ async function findCafeDetails(search) {
             });
         }
 
-         
-
-
         // console.log(results);
         return results;
     } finally {
@@ -162,6 +159,61 @@ async function findImage(objectId){
     }
 }
 
+async function findLocations(location) {
+    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+
+    try {
+        await client.connect();
+        const database = client.db('CafeData');
+        const cafes = database.collection('CafeInfo');
+
+        cafes.find().forEach(
+            function (e) {
+                // update document, using its own properties
+                // Check to see if latitude is in the document
+                //Sloppy coding alert - I hould have check longitude also, but it works here
+                var ll = {longitude : e.longitude, latitude: e.latitude};
+                var lla =[]; //an array
+                if ('latitude' in e && e.latitude !== ""){
+                    //fills the array with longitude and latitude
+                    Object.keys(ll).forEach(function(key) {
+                    var val = ll[key];
+                    lla.push(val);
+                })
+                var p = "Point";
+                // Create location variable in document - see how this compares with the slides
+                loc = {type: p, coordinates: lla};     	
+                     
+                // save the updated document
+                wc = db.Tweets.updateOne({_id: e._id}, {$set:{loc}})
+                }
+            }
+        ) 	
+    
+        docs = cafes.createIndex( { loc : "2dsphere" });
+        // //SHOW INDEXES
+        // docs = cafes.getIndexes();
+        console.log("doc", doc)
+
+        // const cursor = cafes.find(query, options);
+
+        // // print a message if no documents were found
+        // if ((await cursor.count()) === 0) {
+        //     console.log("No documents found!");
+        // }
+        
+        // await cursor.forEach(function(item){
+        //     results.push(item);
+            
+        // }); 
+        // // console.log(results);
+        // return results;
+    } finally {
+        // Ensures that the client will close when you finish/error
+        await client.close();
+    }
+}
+
 //for frontend: update UI inside the 'then' 
 search('Hard Rock cafe').then(function(results){
     //update UI here using results array
@@ -190,6 +242,15 @@ getCommentsByID('6211595e83f42d30651d2e5e').then(function(results){
 }).catch(console.dir);
 
 findImage('6211595e83f42d30651d2e3e').then(function(data){
+    //update UI here using results array
+   
+    // var imageUrl = new URL(data.toString);
+    console.log(data);
+    // var readStream = fs.createReadStream({filename:imageUrl});
+    // readStream.pipe(res);
+}).catch(console.dir);
+
+findLocations('New York').then(function(data){
     //update UI here using results array
    
     // var imageUrl = new URL(data.toString);
