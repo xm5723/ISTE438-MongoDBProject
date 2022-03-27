@@ -78,3 +78,8 @@ hr{
   color: white;
   border-radius: 25px / 17px;
 }
+#scroll-comments {
+  width: 90%;
+  height: 200px;
+  overflow: auto;
+}

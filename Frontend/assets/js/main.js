@@ -124,12 +124,16 @@ function quit() {
     );
     const responseJson = response.data;
     console.log(responseJson);
+    var div = document.createElement("div");
+    div.setAttribute("id", "scroll-comments");
     for(var i=0; i<responseJson.length; i++){
       var commentText = document.createElement("h3");
       commentText.setAttribute("style", "color: yellow");
       commentText.innerHTML = responseJson[i]["comment"];
-      document.getElementsByTagName("form")[0].appendChild(commentText);
+        div.appendChild(commentText);
+    //   document.getElementsByTagName("form")[0].appendChild(commentText);
     }
+    document.getElementsByTagName("form")[0].appendChild(div);
 
   }
   
