@@ -2,15 +2,17 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Lato:wght@100;400&family=Montserrat&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@100;400&family=Montserrat&family=PT+Serif:ital@0;1&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css" />
+    <!-- <script src="../main.js"></script> -->
+
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script>
+      function quit(){
+        window.close();
+      }
       // resets the page
       function reset() {
           window.location.reload();
@@ -21,13 +23,13 @@
           params.append("companyName",document.getElementById("toSearch").value)
           const response = await axios.post(`http://localhost:3000/getByCompanyName`,params);
           const responseJson = response.data;
-          console.log(responseJson);
+          // console.log(responseJson);
           var arr = [];
           for(var i=0; i<responseJson.length; i++){
             arr.push(responseJson[i]['Company Name']);
           }
           var searchText = document.getElementById('toSearch').value;
-          var selectFrom = document.createElement("h2");
+          var selectFrom = document.createElement("h3");
           selectFrom.innerHTML = "Select from the below list for a precise result";
           var temp = 0;
           if(temp == 0){
@@ -35,6 +37,7 @@
               temp++;
           }
           var select = document.createElement("select");
+          select.setAttribute("id", "select");
           // select List code
           for(var i=-1; i<arr.length; i++){
               if (i == -1) {
@@ -65,28 +68,102 @@
         params.append("companyName",cafeName)
         const response = await axios.post(`http://localhost:3000/getByCompanyName`,params);
         const responseJson = response.data;
-        var nameText = document.createElement("h2");
+        var hr = document.createElement("hr");
+        document.getElementsByTagName('form')[0].appendChild(hr);
+        var nameText = document.createElement("h3");
         nameText.innerHTML = responseJson[0]['Company Name'];
         document.getElementsByTagName('form')[0].appendChild(nameText);
-        var addressText = document.createElement("h2");
+        var addressText = document.createElement("h3");
         addressText.innerHTML = responseJson[0]['Address'];
         document.getElementsByTagName('form')[0].appendChild(addressText);
-        var phoneText = document.createElement("h2");
+        var phoneText = document.createElement("h3");
         phoneText.innerHTML = responseJson[0]['Phone'];
         document.getElementsByTagName('form')[0].appendChild(phoneText);
+        var hr = document.createElement("hr");
+        document.getElementsByTagName('form')[0].appendChild(hr);
+        var commentLabel = document.createElement("h3");
+        commentLabel.innerHTML = "Add a comment";
+        document.getElementsByTagName('form')[0].appendChild(commentLabel);
+        var commentText = document.createElement("textarea");
+        commentText.setAttribute("rows", "4");
+        commentLabel.setAttribute("id", "comment");
+        commentText.setAttribute("cols", "50");
+        commentText.setAttribute("name", "comment");
+        document.getElementsByTagName('form')[0].appendChild(commentText);
+        var commentButton = document.createElement("button");
+        commentButton.setAttribute("id", "comment-add");
+        commentButton.setAttribute("onclick", "setCafeComment(responseJson[0]['_id']");
+        commentButton.innerHTML = "Add comment";
+        document.getElementsByTagName('form')[0].appendChild(commentButton);
+        setCafeComment(responseJson[0]['_id']);
       }
+      async function setCafeComment(objectId){
+        try{
+            document.getElementsByTagName('form')[0].appendChild(hr);
+            var commentPrevious = document.createElement("h3");
+            commentPrevious.innerHTML = "Previous comments";
+            document.getElementsByTagName('form')[0].appendChild(commentPrevious);  
+            getCommentsByID(responseJson[0]['_id']);
+            
+            var comment = document.getElementById("comment").value;
+            await client.connect();
+            const database = client.db('CafeData');
+            const comments = database.collection('CafeComments');
+            
+            var myObj = { objectId: objectId, comment: comment };
+            await comments.insertOne(myObj);
+        }
+        finally {
+            await client.close();
+        }
+    }
+
+    async function getCommentsByID(cafeObjectId) {  
+        const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+        var results = [];
+        try {
+            await client.connect();
+            const database = client.db('CafeData');
+            const comments = database.collection('CafeComments');
+            const query = { objectId: cafeObjectId};
+            const options = {
+                projection: {_id:0,comment:1}
+            }
+
+            const cursor = comments.find(query, options);
+
+            // print a message if no documents were found
+            if ((await cursor.count()) === 0) {
+                console.log("No documents found!");
+            }
+
+            await cursor.forEach(function(item){
+                results.push(item);
+
+            }); 
+
+
+            console.log(results);
+            // var json = JSON.stringify(results);
+            return results;
+        } finally {
+            await client.close();
+        }
+    }
     </script>
     <title>Project 1</title>
   </head>
   <body>
     <div id="main">
-      <h1>Search inside the Database</h1>
-      <button onclick="reset()" id="reset">Reset</button>
+      <h2>EXPLORE THE DATABASE</h2>
+      <hr />
       <form>
-        <h2>Enter the keyword to Search</h2>
+        <h3>Enter a keyword to search</h3>
         <input type="text" id="toSearch"></input>
-        <input type="button" id="go" onclick="getByCompanyName()" value="Go" />
+        <input type="button" id="go" onclick="getByCompanyName()" value="Search" />
       </form>
+      <button onclick="reset()" id="reset">Another search</button>
+      <button onclick="quit()" id="quit">Quit</button>
     </div>
   </body>
 </html>
