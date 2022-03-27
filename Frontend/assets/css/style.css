@@ -1,8 +1,9 @@
 body {
   background-image: url("../img/bg.jpg");
-  height: 80%;
+  background-repeat: repeat-y;
   background-size: cover;
-  background-color: bisque;
+  height: 100vh;
+  /* background-color: bisque; */
   font-family: 'PT Serif', serif;
   color: #c9cbca;
 }

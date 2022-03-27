@@ -93,7 +93,7 @@ function quit() {
     commentInputButton.setAttribute("value", "Add Comment");
     document.getElementsByTagName("form")[0].appendChild(commentInputButton);
     document.getElementsByTagName("form")[0].appendChild(hr);
-    var commentPrevious = document.createElement("h3");
+    var commentPrevious = document.createElement("h2");
     commentPrevious.innerHTML = "Previous comments";
     document.getElementsByTagName("form")[0].appendChild(commentPrevious);
     
@@ -110,6 +110,9 @@ function quit() {
       `http://localhost:3000/setCafeComment`,
       params
     );
+    var h3 = document.createElement("h3");
+    h3.innerHTML = "Comment added successfully";
+    document.getElementById('comment-add').insertAdjacentElement('afterend', h3);
   }
   
   async function getCommentsByID(cafeObjectId) {
@@ -121,7 +124,12 @@ function quit() {
     );
     const responseJson = response.data;
     console.log(responseJson);
-    console.log(cafeObjectId);
-    // var json = JSON.stringify(results);
+    for(var i=0; i<responseJson.length; i++){
+      var commentText = document.createElement("h3");
+      commentText.setAttribute("style", "color: yellow");
+      commentText.innerHTML = responseJson[i]["comment"];
+      document.getElementsByTagName("form")[0].appendChild(commentText);
+    }
+
   }
   
