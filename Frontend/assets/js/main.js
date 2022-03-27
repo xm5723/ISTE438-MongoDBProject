@@ -114,7 +114,7 @@ function quit() {
   
   async function getCommentsByID(cafeObjectId) {
     const params = new URLSearchParams();
-    params.append("objectId", "cafeObjectId");
+    params.append("cafeID", cafeObjectId);
     const response = await axios.post(
       `http://localhost:3000/getCommentsByID`,
       params
