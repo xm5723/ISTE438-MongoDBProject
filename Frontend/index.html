@@ -111,11 +111,7 @@
 
         params.append("objectId","6211595e83f42d30651d2e5e");
         params.append("comment",'Setting comment from html page');
-        await axios.post(`http://localhost:3000/setCafeComment`,params);
-        
-        
-       
-        
+        await axios.post(`http://localhost:3000/setCafeComment`,params);        
     }
 
     async function getCommentsByID(cafeObjectId) {  
