@@ -1,10 +1,10 @@
 const express = require("express")
 const mongo = require("mongodb").MongoClient
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, GridFSBucket } = require('mongodb');
 var bodyParser = require('body-parser')
 var cors = require('cors')
 const app = express();
-
+var fs = require('fs');
 app.use(cors());
 // app.use(express.urlencoded({
 //   extended: true
@@ -15,6 +15,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 const database = client.db('CafeData');
 const cafes = database.collection('CafeInfo');
 const comments = database.collection('CafeComments');
+const cafesImages = database.collection('fs.files');
 client.connect();
 app.get('/', (req, res) => {
     res.send("Hello World");
@@ -38,6 +39,42 @@ app.post("/getByCompanyName", (req, res) => {
           }
           res.status(200).json(items);
         });
+
+  });
+
+  app.post("/getImageByObjectID", (req, res) => {
+    var objectId = req.body.objectId;
+    console.log("req:" +  objectId);
+    const query = { 'cafeID': new RegExp(`\\b${objectId}`, 'gi')};
+    const options = {
+      projection: {_id:{"$toString": "$_id"}, filename: 1}
+    }
+    const cursor = cafesImages.find(query, options).toArray((err, items) => {
+        if (err) {
+          console.error(err);
+          res.status(500).json({ err: err });
+          return;
+        }
+        data = items[0].filename;
+        console.log("data", data);
+        const bucket = new GridFSBucket(database, {bucketName: 'fs'});
+
+        bucket.openDownloadStreamByName(data).
+        pipe(fs.createWriteStream('./images/outputFile.png')).
+        on('error', function(error) {
+            console.log(error);
+        }).
+        on('finish', function() {
+            process.exit(0);
+        });
+        res.status(200).json(items);
+    });
+        // print a message if no documents were found
+    
+     
+
+    
+      
 
   });
 
