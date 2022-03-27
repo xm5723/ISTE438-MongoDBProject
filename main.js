@@ -71,52 +71,7 @@ async function search(search) {
         await client.close();
     }
 }
-async function setCafeComment(objectId, comment){
-    try{
-        await client.connect();
-        const database = client.db('CafeData');
-        const comments = database.collection('CafeComments');
-        
-        var myObj = { objectId: objectId, comment: comment };
-        await comments.insertOne(myObj);
-    }
-    finally {
-        await client.close();
-    }
-}
 
-async function getCommentsByID(cafeObjectId) {
-    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-    var results = [];
-    try {
-        await client.connect();
-        const database = client.db('CafeData');
-        const comments = database.collection('CafeComments');
-        const query = { objectId: cafeObjectId};
-        const options = {
-            projection: {_id:0,comment:1}
-        }
-
-        const cursor = comments.find(query, options);
-
-        // print a message if no documents were found
-        if ((await cursor.count()) === 0) {
-            console.log("No documents found!");
-        }
-
-        await cursor.forEach(function(item){
-            results.push(item);
-
-        }); 
-
-
-        // console.log(results);
-        // var json = JSON.stringify(results);
-        return results;
-    } finally {
-        await client.close();
-    }
-}
 
 async function findImage(objectId){
     const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
