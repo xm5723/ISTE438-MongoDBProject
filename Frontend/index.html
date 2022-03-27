@@ -14,7 +14,7 @@
       async function getByCompanyName() {
         try{
           const params = new URLSearchParams();
-          params.append("companyName",document.getElementById("toSearch").value)
+          params.append("companyName",document.getElementById("toSearch").value);
           const response = await axios.post(`http://localhost:3000/getByCompanyName`,params);
           const responseJson = response.data;
           console.log(`GET:`, responseJson);
@@ -22,7 +22,7 @@
         }catch (errors) {
           console.error(errors);
         }
-      }
+    }
     </script>
     <title>Project 1</title>
   </head>

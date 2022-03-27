@@ -6,9 +6,7 @@ var cors = require('cors')
 const app = express();
 
 app.use(cors());
-// app.use(express.urlencoded({
-//   extended: true
-// }))
+
 app.use(bodyParser.urlencoded({ extended: true }));
 const uri = "mongodb+srv://admin:Group5@cluster0.0vxli.mongodb.net/CafeData?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
@@ -16,9 +14,11 @@ const database = client.db('CafeData');
 const cafes = database.collection('CafeInfo');
 const comments = database.collection('CafeComments');
 client.connect();
+
 app.get('/', (req, res) => {
     res.send("Hello World");
   });
+  
 app.post("/getByCompanyName", (req, res) => {
     var companyName = req.body.companyName;
     console.log("req:" +  req.body.companyName);
@@ -77,6 +77,7 @@ app.post("/getByCompanyName", (req, res) => {
       res.status(200).json(items);
     });
   });
+
   app.post("/setCafeComment", (req, res) => {
     var objectId = req.body.objectId;
     var comment = req.body.comment;
@@ -90,6 +91,13 @@ app.post("/getByCompanyName", (req, res) => {
       res.status(200).json({ ok: true })
     })
   });
-  // var myObj = { objectId: objectId, comment: comment };
-  //       await comments.insertOne(myObj);
+
+  app.post('/getFile', function(req, res) {
+    var collection = db.collection('fs.files');
+    var da = collection.find().toArray(function(err, items) {
+        console.log(items[0]);
+        res.writeHead(200, {'Content-Type': 'image/png'});
+        res.end(items[1].dbfileName.buffer, 'binary');
+    });
+});
   app.listen(3000, () => console.log("Server ready"))
