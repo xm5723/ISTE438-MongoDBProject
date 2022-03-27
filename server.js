@@ -19,6 +19,7 @@ client.connect();
 app.get('/', (req, res) => {
     res.send("Hello World");
   });
+
 app.post("/getByCompanyName", (req, res) => {
     var companyName = req.body.companyName;
     console.log("req:" +  req.body.companyName);
@@ -77,6 +78,7 @@ app.post("/getByCompanyName", (req, res) => {
       res.status(200).json(items);
     });
   });
+
   app.post("/setCafeComment", (req, res) => {
     var objectId = req.body.objectId;
     var comment = req.body.comment;
@@ -88,7 +90,7 @@ app.post("/getByCompanyName", (req, res) => {
       }
       console.log(result)
       res.status(200).json({ ok: true })
-    })
+    });
   });
   // var myObj = { objectId: objectId, comment: comment };
   //       await comments.insertOne(myObj);

@@ -97,25 +97,25 @@
         document.getElementsByTagName('form')[0].appendChild(commentButton);
         setCafeComment(responseJson[0]['_id']);
       }
+
       async function setCafeComment(objectId){
-        try{
-            document.getElementsByTagName('form')[0].appendChild(hr);
-            var commentPrevious = document.createElement("h3");
-            commentPrevious.innerHTML = "Previous comments";
-            document.getElementsByTagName('form')[0].appendChild(commentPrevious);  
-            getCommentsByID(responseJson[0]['_id']);
-            
-            var comment = document.getElementById("comment").value;
-            await client.connect();
-            const database = client.db('CafeData');
-            const comments = database.collection('CafeComments');
-            
-            var myObj = { objectId: objectId, comment: comment };
-            await comments.insertOne(myObj);
-        }
-        finally {
-            await client.close();
-        }
+        var hr = document.createElement('hr');
+        document.getElementsByTagName('form')[0].appendChild(hr);
+        var commentPrevious = document.createElement("h3");
+        commentPrevious.innerHTML = "Previous comments";
+        document.getElementsByTagName('form')[0].appendChild(commentPrevious);  
+        // getCommentsByID(responseJson[0]['_id']);
+        
+        var comment = document.getElementById("comment").value;
+        const params = new URLSearchParams();
+
+        params.append("objectId","6211595e83f42d30651d2e5e");
+        params.append("comment",'Setting comment from html page');
+        await axios.post(`http://localhost:3000/setCafeComment`,params);
+        
+        
+       
+        
     }
 
     async function getCommentsByID(cafeObjectId) {  
