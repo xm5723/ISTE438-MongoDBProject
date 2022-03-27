@@ -1,24 +1,26 @@
 const express = require("express")
 const mongo = require("mongodb").MongoClient
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, GridFSBucket } = require('mongodb');
 var bodyParser = require('body-parser')
 var cors = require('cors')
 const app = express();
-
+var fs = require('fs');
 app.use(cors());
-
+// app.use(express.urlencoded({
+//   extended: true
+// }))
 app.use(bodyParser.urlencoded({ extended: true }));
 const uri = "mongodb+srv://admin:Group5@cluster0.0vxli.mongodb.net/CafeData?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 const database = client.db('CafeData');
 const cafes = database.collection('CafeInfo');
 const comments = database.collection('CafeComments');
+const cafesImages = database.collection('fs.files');
 client.connect();
-
 app.get('/', (req, res) => {
     res.send("Hello World");
   });
-  
+
 app.post("/getByCompanyName", (req, res) => {
     var companyName = req.body.companyName;
     console.log("req:" +  req.body.companyName);
@@ -37,6 +39,42 @@ app.post("/getByCompanyName", (req, res) => {
           }
           res.status(200).json(items);
         });
+
+  });
+
+  app.post("/getImageByObjectID", (req, res) => {
+    var objectId = req.body.objectId;
+    console.log("req:" +  objectId);
+    const query = { 'cafeID': new RegExp(`\\b${objectId}`, 'gi')};
+    const options = {
+      projection: {_id:{"$toString": "$_id"}, filename: 1}
+    }
+    const cursor = cafesImages.find(query, options).toArray((err, items) => {
+        if (err) {
+          console.error(err);
+          res.status(500).json({ err: err });
+          return;
+        }
+        data = items[0].filename;
+        console.log("data", data);
+        const bucket = new GridFSBucket(database, {bucketName: 'fs'});
+
+        bucket.openDownloadStreamByName(data).
+        pipe(fs.createWriteStream('./images/outputFile.png')).
+        on('error', function(error) {
+            console.log(error);
+        }).
+        on('finish', function() {
+            process.exit(0);
+        });
+        res.status(200).json(items);
+    });
+        // print a message if no documents were found
+    
+     
+
+    
+      
 
   });
 
@@ -89,15 +127,8 @@ app.post("/getByCompanyName", (req, res) => {
       }
       console.log(result)
       res.status(200).json({ ok: true })
-    })
-  });
-
-  app.post('/getFile', function(req, res) {
-    var collection = db.collection('fs.files');
-    var da = collection.find().toArray(function(err, items) {
-        console.log(items[0]);
-        res.writeHead(200, {'Content-Type': 'image/png'});
-        res.end(items[1].dbfileName.buffer, 'binary');
     });
-});
+  });
+  // var myObj = { objectId: objectId, comment: comment };
+  //       await comments.insertOne(myObj);
   app.listen(3000, () => console.log("Server ready"))
