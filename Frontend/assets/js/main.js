@@ -121,5 +121,6 @@ async function getCommentsByID(cafeObjectId) {
   );
   const responseJson = response.data;
   console.log(response);
+  console.log(objectId);
   // var json = JSON.stringify(results);
 }
