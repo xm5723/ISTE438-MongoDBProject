@@ -91,11 +91,12 @@
         commentText.setAttribute("cols", "50");
         commentText.setAttribute("name", "comment");
         document.getElementsByTagName('form')[0].appendChild(commentText);
-        var commentButton = document.createElement("button");
-        commentButton.setAttribute("id", "comment-add");
-        commentButton.setAttribute("onclick", "setCafeComment(responseJson[0]['_id']");
-        commentButton.innerHTML = "Add comment";
-        document.getElementsByTagName('form')[0].appendChild(commentButton);
+        var commentInputButton = document.createElement("input");
+        commentInputButton.setAttribute("type", "button");
+        commentInputButton.setAttribute("id", "comment-add");
+        commentInputButton.setAttribute("onclick", "setCafeComment(responseJson[0]['_id']");
+        commentInputButton.setAttribute("value", "Add Comment");
+        document.getElementsByTagName('form')[0].appendChild(commentInputButton);
         var hr = document.createElement('hr');
         document.getElementsByTagName('form')[0].appendChild(hr);
         var commentPrevious = document.createElement("h3");
@@ -156,7 +157,7 @@
       <hr />
       <form>
         <h3>Enter a keyword to search</h3>
-        <input type="text" id="toSearch"></input>
+        <input type="text" id="toSearch" />
         <input type="button" id="go" onclick="getByCompanyName()" value="Search" />
       </form>
       <button onclick="reset()" id="reset">Another search</button>
