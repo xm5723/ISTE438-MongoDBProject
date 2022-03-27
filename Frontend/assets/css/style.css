@@ -68,3 +68,12 @@ hr{
 #go{
   color:black;
 }
+#comment-add{
+  margin-top: 15px;
+  height: 30px;
+  width: 120px;
+  background-color: rgb(41, 68, 0);
+  border-color: rgb(41, 68, 0);
+  color: white;
+  border-radius: 25px / 17px;
+}
