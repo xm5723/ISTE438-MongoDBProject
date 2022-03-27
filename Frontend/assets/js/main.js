@@ -114,13 +114,13 @@ async function setCafeComment(objectId) {
 
 async function getCommentsByID(cafeObjectId) {
   const params = new URLSearchParams();
-  params.append("objectId", cafeObjectId);
+  params.append("objectId", "cafeObjectId");
   const response = await axios.post(
     `http://localhost:3000/getCommentsByID`,
     params
   );
   const responseJson = response.data;
   console.log(response);
-  console.log(objectId);
+  console.log(cafeObjectId);
   // var json = JSON.stringify(results);
 }
