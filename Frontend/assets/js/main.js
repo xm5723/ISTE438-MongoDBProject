@@ -120,7 +120,7 @@ function quit() {
       params
     );
     const responseJson = response.data;
-    console.log(response);
+    console.log(responseJson);
     console.log(cafeObjectId);
     // var json = JSON.stringify(results);
   }
