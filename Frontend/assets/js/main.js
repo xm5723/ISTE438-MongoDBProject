@@ -122,7 +122,6 @@ function quit() {
       img.setAttribute("height", "100%");
       document.getElementById('img-container').appendChild(img);
     }, 1500);
-    
   }
 
   async function setCafeComment(objectId) {
