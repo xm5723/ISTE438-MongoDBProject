@@ -115,7 +115,7 @@ function quit() {
     const responseJson = response.data;
     console.log(responseJson);
     var img = document.createElement("img");
-    img.setAttribute("src", "C:\\Users\\Public\\Pictures\\outputFile.png");
+    img.setAttribute("src", "../images/outputFile.png");
     img.setAttribute("width", "100%");
     img.setAttribute("height", "100%");
     document.getElementById('img-container').appendChild(img);
@@ -147,7 +147,7 @@ function quit() {
     console.log(responseJson);
     var div = document.createElement("div");
     div.setAttribute("id", "scroll-comments");
-    for(var i=0; i<responseJson.length; i++){
+    for(var i=responseJson.length-1; i>=0; i--){
       var commentText = document.createElement("h3");
       commentText.setAttribute("style", "color: yellow");
       commentText.innerHTML = responseJson[i]["comment"];
