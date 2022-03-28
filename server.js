@@ -6,9 +6,6 @@ var cors = require('cors')
 const app = express();
 var fs = require('fs');
 app.use(cors());
-// app.use(express.urlencoded({
-//   extended: true
-// }))
 app.use(bodyParser.urlencoded({ extended: true }));
 const uri = "mongodb+srv://admin:Group5@cluster0.0vxli.mongodb.net/CafeData?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
@@ -60,7 +57,7 @@ app.post("/getByCompanyName", (req, res) => {
         const bucket = new GridFSBucket(database, {bucketName: 'fs'});
         
         bucket.openDownloadStreamByName(data).
-        pipe(fs.createWriteStream('C:\\Users\\Public\\Pictures\\outputFile.png')).
+        pipe(fs.createWriteStream('./images/outputFile.png')).
         on('error', function(error) {
             console.log(error);
         }).
