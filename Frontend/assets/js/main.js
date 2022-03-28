@@ -72,6 +72,10 @@ function quit() {
     var phoneText = document.createElement("h3");
     phoneText.innerHTML = responseJson[0]["Phone"];
     document.getElementsByTagName("form")[0].appendChild(phoneText);
+
+    // work on image here
+    getImageByObjectID(responseJson[0]["_id"]);
+
     document.getElementsByTagName("form")[0].appendChild(hr);
     var commentLabel = document.createElement("h3");
     commentLabel.innerHTML = "Add a comment";
@@ -100,6 +104,23 @@ function quit() {
     getCommentsByID(id);
   }
   
+  // get image from the database
+  async function getImageByObjectID(objectId) {
+    const params = new URLSearchParams();
+    params.append("objectId", objectId);
+    const response = await axios.post(
+      `http://localhost:3000/getImageByObjectID`,
+      params
+    );
+    const responseJson = response.data;
+    console.log(responseJson);
+    var img = document.createElement("img");
+    img.setAttribute("src", "C:\\Users\\Public\\Pictures\\outputFile.png");
+    img.setAttribute("width", "100%");
+    img.setAttribute("height", "100%");
+    document.getElementById('img-container').appendChild(img);
+  }
+
   async function setCafeComment(objectId) {
     comment = document.getElementById("comment").value;
     console.log(objectId);

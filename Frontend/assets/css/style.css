@@ -83,3 +83,14 @@ hr{
   height: 200px;
   overflow: auto;
 }
+
+#img-container{
+  width: 50%;
+  height: 60%;
+  position: fixed;
+  margin-top: 10%;
+  margin-left: 15%;
+  z-index: 1;
+  border: solid #4480a4 3px;
+  overflow: hidden;
+}
