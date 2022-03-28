@@ -72,6 +72,10 @@ function quit() {
     var phoneText = document.createElement("h3");
     phoneText.innerHTML = responseJson[0]["Phone"];
     document.getElementsByTagName("form")[0].appendChild(phoneText);
+
+    // work on image here
+    getImageByObjectID(responseJson[0]["_id"]);
+
     document.getElementsByTagName("form")[0].appendChild(hr);
     var commentLabel = document.createElement("h3");
     commentLabel.innerHTML = "Add a comment";
@@ -93,13 +97,30 @@ function quit() {
     commentInputButton.setAttribute("value", "Add Comment");
     document.getElementsByTagName("form")[0].appendChild(commentInputButton);
     document.getElementsByTagName("form")[0].appendChild(hr);
-    var commentPrevious = document.createElement("h3");
+    var commentPrevious = document.createElement("h2");
     commentPrevious.innerHTML = "Previous comments";
     document.getElementsByTagName("form")[0].appendChild(commentPrevious);
     
     getCommentsByID(id);
   }
   
+  // get image from the database
+  async function getImageByObjectID(objectId) {
+    const params = new URLSearchParams();
+    params.append("objectId", objectId);
+    const response = await axios.post(
+      `http://localhost:3000/getImageByObjectID`,
+      params
+    );
+    const responseJson = response.data;
+    console.log(responseJson);
+    var img = document.createElement("img");
+    img.setAttribute("src", "C:\\Users\\Public\\Pictures\\outputFile.png");
+    img.setAttribute("width", "100%");
+    img.setAttribute("height", "100%");
+    document.getElementById('img-container').appendChild(img);
+  }
+
   async function setCafeComment(objectId) {
     comment = document.getElementById("comment").value;
     console.log(objectId);
@@ -110,6 +131,9 @@ function quit() {
       `http://localhost:3000/setCafeComment`,
       params
     );
+    var h3 = document.createElement("h3");
+    h3.innerHTML = "Comment added successfully";
+    document.getElementById('comment-add').insertAdjacentElement('afterend', h3);
   }
   
   async function getCommentsByID(cafeObjectId) {
@@ -121,7 +145,16 @@ function quit() {
     );
     const responseJson = response.data;
     console.log(responseJson);
-    console.log(cafeObjectId);
-    // var json = JSON.stringify(results);
+    var div = document.createElement("div");
+    div.setAttribute("id", "scroll-comments");
+    for(var i=0; i<responseJson.length; i++){
+      var commentText = document.createElement("h3");
+      commentText.setAttribute("style", "color: yellow");
+      commentText.innerHTML = responseJson[i]["comment"];
+        div.appendChild(commentText);
+    //   document.getElementsByTagName("form")[0].appendChild(commentText);
+    }
+    document.getElementsByTagName("form")[0].appendChild(div);
+
   }
   

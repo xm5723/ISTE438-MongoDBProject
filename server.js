@@ -58,9 +58,9 @@ app.post("/getByCompanyName", (req, res) => {
         data = items[0].filename;
         console.log("data", data);
         const bucket = new GridFSBucket(database, {bucketName: 'fs'});
-
+        
         bucket.openDownloadStreamByName(data).
-        pipe(fs.createWriteStream('./images/outputFile.png')).
+        pipe(fs.createWriteStream('C:\\Users\\Public\\Pictures\\outputFile.png')).
         on('error', function(error) {
             console.log(error);
         }).
