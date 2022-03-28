@@ -114,11 +114,15 @@ function quit() {
     );
     const responseJson = response.data;
     console.log(responseJson);
-    var img = document.createElement("img");
-    img.setAttribute("src", "../images/outputFile.png");
-    img.setAttribute("width", "100%");
-    img.setAttribute("height", "100%");
-    document.getElementById('img-container').appendChild(img);
+    
+    setTimeout(() => {
+      var img = document.createElement("img");
+      img.setAttribute("src", "../images/outputFile.png");
+      img.setAttribute("width", "100%");
+      img.setAttribute("height", "100%");
+      document.getElementById('img-container').appendChild(img);
+    }, 1500);
+    
   }
 
   async function setCafeComment(objectId) {
