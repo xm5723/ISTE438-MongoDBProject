@@ -38,78 +38,7 @@ app.post("/getByCompanyName", (req, res) => {
         });
 
   });
-  // async function findImage(objectId){
-  //   const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-  //   var results = [];
-  //   var resultDefaultImage = [];
-  //   var data = '';
-  //   try{
-  //       await client.connect();
-  //       const database = client.db('CafeData');
-  //       const cafesImages = database.collection('fs.files');
-  //       const query = { 'cafeID': new RegExp(`\\b${objectId}`, 'gi')};
-        
-  //       const options = {
-  //           projection: {_id:{"$toString": "$_id"}, filename: 1}
-  //       }
-  //       const cursor = cafesImages.find(query, options);
-  //       // print a message if no documents were found
-  //       if ((await cursor.count()) === 0) {
-  //           console.log("No documents found!");
-  //       }
-  //       await cursor.forEach(function(item){
-  //           results.push(item);
-  //       }); 
-
-  //       console.log("results", results)
-
-  //       if(results != null && results != '') {
-  //           data = results[0].filename;
-  //           console.log("data", data);
-  //           if (data !== 'undefined'){
-  //               const bucket = new GridFSBucket(database, {bucketName: 'fs'});
-
-  //               bucket.openDownloadStreamByName(data).
-  //               pipe(fs.createWriteStream('/Users/xingmeng/Documents/school/2022Spring/ISTE483/project/image/outputFile.png')).
-  //               on('error', function(error) {
-  //                   assert.ifError(error);
-  //               }).
-  //               on('finish', function() {
-  //                   process.exit(0);
-  //               });
-  //               return data;
-  //           }
-  //       }
-  //       else{
-  //       const query = { 'cafeID': new RegExp(`\\b12345678`, 'gi')};
-    
-  //       const options = {
-  //           projection: {_id:{"$toString": "$_id"}, filename: 1}
-  //       }
-  //       const cursor = cafesImages.find(query, options);
-  //       // print a message if no documents were found
-  //       if ((await cursor.count()) === 0) {
-  //           console.log("No documents found!");
-  //       }
-  //       await cursor.forEach(function(item){
-  //           resultDefaultImage.push(item);
-  //       }); 
-
-  //       data = resultDefaultImage[0].filename;
-  //       console.log("data", data);
-
-  //       const bucket = new GridFSBucket(database, {bucketName: 'fs'});
-
-  //       bucket.openDownloadStreamByName(data).
-  //       pipe(fs.createWriteStream('/Users/xingmeng/Documents/school/2022Spring/ISTE483/project/image/outputFile.png')).
-  //       on('error', function(error) {
-  //           assert.ifError(error);
-  //       }).
-  //       on('finish', function() {
-  //           process.exit(0);
-  //       });
-  //       return data;
-  //   }
+  
   app.post("/getImageByObjectID", (req, res) => {
     var objectId = req.body.objectId;
     console.log("req:" +  objectId);
