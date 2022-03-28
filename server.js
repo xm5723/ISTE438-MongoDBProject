@@ -38,20 +38,119 @@ app.post("/getByCompanyName", (req, res) => {
         });
 
   });
+  // async function findImage(objectId){
+  //   const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+  //   var results = [];
+  //   var resultDefaultImage = [];
+  //   var data = '';
+  //   try{
+  //       await client.connect();
+  //       const database = client.db('CafeData');
+  //       const cafesImages = database.collection('fs.files');
+  //       const query = { 'cafeID': new RegExp(`\\b${objectId}`, 'gi')};
+        
+  //       const options = {
+  //           projection: {_id:{"$toString": "$_id"}, filename: 1}
+  //       }
+  //       const cursor = cafesImages.find(query, options);
+  //       // print a message if no documents were found
+  //       if ((await cursor.count()) === 0) {
+  //           console.log("No documents found!");
+  //       }
+  //       await cursor.forEach(function(item){
+  //           results.push(item);
+  //       }); 
 
+  //       console.log("results", results)
+
+  //       if(results != null && results != '') {
+  //           data = results[0].filename;
+  //           console.log("data", data);
+  //           if (data !== 'undefined'){
+  //               const bucket = new GridFSBucket(database, {bucketName: 'fs'});
+
+  //               bucket.openDownloadStreamByName(data).
+  //               pipe(fs.createWriteStream('/Users/xingmeng/Documents/school/2022Spring/ISTE483/project/image/outputFile.png')).
+  //               on('error', function(error) {
+  //                   assert.ifError(error);
+  //               }).
+  //               on('finish', function() {
+  //                   process.exit(0);
+  //               });
+  //               return data;
+  //           }
+  //       }
+  //       else{
+  //       const query = { 'cafeID': new RegExp(`\\b12345678`, 'gi')};
+    
+  //       const options = {
+  //           projection: {_id:{"$toString": "$_id"}, filename: 1}
+  //       }
+  //       const cursor = cafesImages.find(query, options);
+  //       // print a message if no documents were found
+  //       if ((await cursor.count()) === 0) {
+  //           console.log("No documents found!");
+  //       }
+  //       await cursor.forEach(function(item){
+  //           resultDefaultImage.push(item);
+  //       }); 
+
+  //       data = resultDefaultImage[0].filename;
+  //       console.log("data", data);
+
+  //       const bucket = new GridFSBucket(database, {bucketName: 'fs'});
+
+  //       bucket.openDownloadStreamByName(data).
+  //       pipe(fs.createWriteStream('/Users/xingmeng/Documents/school/2022Spring/ISTE483/project/image/outputFile.png')).
+  //       on('error', function(error) {
+  //           assert.ifError(error);
+  //       }).
+  //       on('finish', function() {
+  //           process.exit(0);
+  //       });
+  //       return data;
+  //   }
   app.post("/getImageByObjectID", (req, res) => {
     var objectId = req.body.objectId;
     console.log("req:" +  objectId);
-    const query = { 'cafeID': new RegExp(`\\b${objectId}`, 'gi')};
+    // const query = { 'cafeID': new RegExp(`\\b${objectId}`, 'gi')};
+    var query;
     const options = {
       projection: {_id:{"$toString": "$_id"}, filename: 1}
     }
-    const cursor = cafesImages.find(query, options).toArray((err, items) => {
-        if (err) {
-          console.error(err);
-          res.status(500).json({ err: err });
-          return;
-        }
+    
+    query = { 'cafeID': new RegExp(`\\b${objectId}`, 'gi')};
+    
+    cafesImages.find(query, options).toArray((err, items) => {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ err: err });
+        return;
+      }
+      console.log(items[0]);
+      if(items[0] === undefined){
+        query = { 'cafeID': new RegExp(`\\b12345678`, 'gi')};
+        const cursor = cafesImages.find(query, options).toArray((err, items) => {
+          if (err) {
+            console.error(err);
+            res.status(500).json({ err: err });
+            return;
+          }
+          data = items[0].filename;
+          console.log("data", data);
+          const bucket = new GridFSBucket(database, {bucketName: 'fs'});
+          
+          bucket.openDownloadStreamByName(data).
+          pipe(fs.createWriteStream('./images/outputFile.png')).
+          on('error', function(error) {
+              console.log(error);
+          }).
+          on('finish', function() {
+              // process.exit(0);
+          });
+          res.status(200).json(items);
+        });
+      }else{
         data = items[0].filename;
         console.log("data", data);
         const bucket = new GridFSBucket(database, {bucketName: 'fs'});
@@ -62,10 +161,16 @@ app.post("/getByCompanyName", (req, res) => {
             console.log(error);
         }).
         on('finish', function() {
-            process.exit(0);
+            // process.exit(0);
         });
         res.status(200).json(items);
+        }
+      
     });
+    
+
+    
+    
         // print a message if no documents were found
     
     
