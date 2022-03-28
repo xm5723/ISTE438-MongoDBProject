@@ -71,11 +71,7 @@ app.post("/getByCompanyName", (req, res) => {
     });
         // print a message if no documents were found
     
-     
-
     
-      
-
   });
 
   app.post("/search", (req, res) => {
